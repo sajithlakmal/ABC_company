@@ -1,0 +1,49 @@
+﻿@model Inventory
+
+@{
+    Layout = "_Layout";
+    var title = "UPDATE Inventory";
+    ViewData["Title"] = title;
+}
+
+<style>
+    .input-validation-error {
+        border-color: red;
+    }
+</style>
+
+<h2>@title</h2>
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<form class="m-1 p-1" method="post">
+    <div class="form-group">
+        <label asp-for="ID"></label>
+        <input asp-for="ID" type="text" readonly class="form-control" type = "number" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" type="text" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="NumberNumber_of_units_available"></label>
+        <input asp-for="NumberNumber_of_units_available" type="text" class="form-control" type = "number" />
+        <span asp-validation-for="NumberNumber_of_units_available" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Re_order_level"></label>
+        <input asp-for="Re_order_level" type="text" class="form-control" type = "number" />
+        <span asp-validation-for="Re_order_level" class="text-danger" ></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Unit_price"></label>
+        <input asp-for="Unit_price" type="text" class="form-control" type = "number" />
+        <span asp-validation-for="Unit_price" class="text-danger"></span>
+    </div>
+ 
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
