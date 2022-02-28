@@ -52,17 +52,12 @@ namespace coudpermits_test.Controllers
             if (loginCheck() == true)
             {
                 return RedirectToAction("dashboard", "account");
-                return View();
+         
 
 
             }
 
-            else
-            {
-                ViewData["Layout"] = "~/_UserLayout.cshtml";
-                return View();
-            }
-           
+      
 
 
             return View();

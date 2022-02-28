@@ -9,15 +9,20 @@ using coudpermits_test.ViewModel;
 
 namespace coudpermits_test.Models
 {
-  
 
-	}
+
+
     public class DB
     {
-        SqlConnection con = new SqlConnection("Data Source=DESKTOP-6K34ULM;Initial Catalog=ABC;Integrated Security=True");
+        public String connectionString = "Data Source=DESKTOP-6K34ULM;Initial Catalog=ABC;Integrated Security=True";
+
         public int LoginCheck(LoginViewModel ad)
         {
-            SqlCommand com = new SqlCommand("login", con);
+
+
+        SqlConnection con = new SqlConnection(connectionString);
+
+        SqlCommand com = new SqlCommand("login", con);
             com.CommandType = CommandType.StoredProcedure;
             com.Parameters.AddWithValue("@email", ad.Email);
             com.Parameters.AddWithValue("@password", ad.Password);
@@ -32,4 +37,5 @@ namespace coudpermits_test.Models
             con.Close();
             return res;
         }
+    }
 }

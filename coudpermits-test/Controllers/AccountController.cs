@@ -13,6 +13,23 @@ namespace coudpermits_test.Controllers
     public class AccountController : Controller
     {
 
+        DB db = new DB();
+        public bool loginCheck()
+        {
+            bool userLogin = false;
+
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("email")))
+            {
+
+                return userLogin;
+            }
+            else
+            {
+                userLogin = true;
+                return userLogin;
+            }
+
+        }
         public IConfiguration Configuration { get; }
 
         public AccountController(IConfiguration configuration)
@@ -22,40 +39,70 @@ namespace coudpermits_test.Controllers
 
         public IActionResult dashboard()
         {
-            List<Inventory> inventorylist = new List<Inventory>();
 
-            string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
-            using (SqlConnection connection = new SqlConnection(connectionString))
+
+            if (loginCheck() == true)
             {
-                //SqlDataReader
-                connection.Open();
+                List<Inventory> inventorylist = new List<Inventory>();
 
-                string sql = "Select * From inventory";
-                SqlCommand command = new SqlCommand(sql, connection);
 
-                using (SqlDataReader dataReader = command.ExecuteReader())
+               
+                using (SqlConnection connection = new SqlConnection(db.connectionString))
                 {
-                    while (dataReader.Read())
+                    //SqlDataReader
+                    connection.Open();
+
+                    string sql = "Select * From inventory";
+                    SqlCommand command = new SqlCommand(sql, connection);
+
+                    using (SqlDataReader dataReader = command.ExecuteReader())
                     {
-                        Inventory inventory = new Inventory();
+                        while (dataReader.Read())
+                        {
+                            Inventory inventory = new Inventory();
 
-                        inventory.ID = Convert.ToInt32(dataReader["ID"]);
-                        inventory.Name = Convert.ToString(dataReader["Name"]);
-                        inventory.Re_order_level = Convert.ToInt32(dataReader["Re_order_level"]);
-                        inventory.NumberNumber_of_units_available = Convert.ToInt32(dataReader["NumberNumber_of_units_available"]);
-                        inventory.Unit_price = Convert.ToInt32(dataReader["Unit_price"]);
+                            inventory.ID = Convert.ToInt32(dataReader["ID"]);
+                            inventory.Name = Convert.ToString(dataReader["Name"]);
+                            inventory.Re_order_level = Convert.ToInt32(dataReader["Re_order_level"]);
+                            inventory.NumberNumber_of_units_available = Convert.ToInt32(dataReader["NumberNumber_of_units_available"]);
+                            inventory.Unit_price = Convert.ToInt32(dataReader["Unit_price"]);
 
-                        inventorylist.Add(inventory);
+                            inventorylist.Add(inventory);
+                        }
                     }
-                }
 
-                connection.Close();
+                    connection.Close();
+                }
+                return View(inventorylist);
             }
-            return View(inventorylist);
+
+            else
+            {
+                return RedirectToAction("login", "home");
+            }
+
+
+          
         }
 
         public IActionResult create()
         {
+
+            if (loginCheck() == true)
+            {
+             
+
+            }
+
+            else
+            {
+                return RedirectToAction("login", "home");
+         
+            }
+
+
+
+
             return View();
         }
 
@@ -74,64 +121,97 @@ namespace coudpermits_test.Controllers
         [HttpPost]
         public IActionResult create(Inventory inventory)
         {
-            if (ModelState.IsValid)
+
+
+            if (loginCheck() == true)
             {
-                string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
-                using (SqlConnection connection = new SqlConnection(connectionString))
+
+                if (ModelState.IsValid)
                 {
-                    string sql = $"Insert Into inventory (Name, ID, NumberNumber_of_units_available, Unit_price,Re_order_level) Values ('{inventory.Name}', '{inventory.ID}','{inventory.NumberNumber_of_units_available}','{inventory.Unit_price}','{inventory.Re_order_level}')";
-
-                    using (SqlCommand command = new SqlCommand(sql, connection))
+                  
+                    using (SqlConnection connection = new SqlConnection(db.connectionString))
                     {
-                        command.CommandType = CommandType.Text;
+                        string sql = $"Insert Into inventory (Name, ID, NumberNumber_of_units_available, Unit_price,Re_order_level) Values ('{inventory.Name}', '{inventory.ID}','{inventory.NumberNumber_of_units_available}','{inventory.Unit_price}','{inventory.Re_order_level}')";
 
-                        connection.Open();
-                        command.ExecuteNonQuery();
-                        connection.Close();
+                        using (SqlCommand command = new SqlCommand(sql, connection))
+                        {
+                            command.CommandType = CommandType.Text;
+
+                            connection.Open();
+                            command.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                        return RedirectToAction("dashboard");
                     }
-                    return RedirectToAction("dashboard");
                 }
+                else
+                    return View();
+
             }
+
             else
-                return View();
+            {
+                return RedirectToAction("login", "home");
+
+            }
+
+
+
+
         }
 
         public IActionResult update(int id)
         {
-            string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
 
-            Inventory inventory = new Inventory();
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            if (loginCheck() == true)
             {
-                string sql = $"Select * From inventory Where Id='{id}'";
-                SqlCommand command = new SqlCommand(sql, connection);
+               
 
-                connection.Open();
-
-                using (SqlDataReader dataReader = command.ExecuteReader())
+                Inventory inventory = new Inventory();
+                using (SqlConnection connection = new SqlConnection(db.connectionString))
                 {
-                    while (dataReader.Read())
-                    {
-                        inventory.ID = Convert.ToInt32(dataReader["Id"]);
-                        inventory.Name = Convert.ToString(dataReader["Name"]);
-                        inventory.Re_order_level = Convert.ToInt32(dataReader["Re_order_level"]);
-                        inventory.NumberNumber_of_units_available = Convert.ToInt32(dataReader["NumberNumber_of_units_available"]);
-                        inventory.Unit_price = Convert.ToInt32(dataReader["Unit_price"]);
-                        
-                    }
-                }
+                    string sql = $"Select * From inventory Where Id='{id}'";
+                    SqlCommand command = new SqlCommand(sql, connection);
 
-                connection.Close();
+                    connection.Open();
+
+                    using (SqlDataReader dataReader = command.ExecuteReader())
+                    {
+                        while (dataReader.Read())
+                        {
+                            inventory.ID = Convert.ToInt32(dataReader["Id"]);
+                            inventory.Name = Convert.ToString(dataReader["Name"]);
+                            inventory.Re_order_level = Convert.ToInt32(dataReader["Re_order_level"]);
+                            inventory.NumberNumber_of_units_available = Convert.ToInt32(dataReader["NumberNumber_of_units_available"]);
+                            inventory.Unit_price = Convert.ToInt32(dataReader["Unit_price"]);
+
+                        }
+                    }
+
+                    connection.Close();
+                }
+                return View(inventory);
+
+
             }
-            return View(inventory);
+
+            else
+            {
+                return RedirectToAction("login", "home");
+              
+            }
+
+
+
+          
         }
 
         [HttpPost]
         [ActionName("Update")]
         public IActionResult update_Post(Inventory inventory)
         {
-            string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
-            using (SqlConnection connection = new SqlConnection(connectionString))
+           
+            using (SqlConnection connection = new SqlConnection(db.connectionString))
             {
                 string sql = $"Update inventory SET Name='{inventory.Name}', Unit_price='{inventory.Unit_price}', Re_order_level='{inventory.Re_order_level}', NumberNumber_of_units_available='{inventory.NumberNumber_of_units_available}' Where Id='{inventory.ID}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
@@ -148,8 +228,8 @@ namespace coudpermits_test.Controllers
         [HttpPost]
         public IActionResult delete(int id)
         {
-            string connectionString = Configuration["ConnectionStrings:DefaultConnection"];
-            using (SqlConnection connection = new SqlConnection(connectionString))
+           
+            using (SqlConnection connection = new SqlConnection(db.connectionString))
             {
                 string sql = $"Delete From inventory Where Id='{id}'";
                 using (SqlCommand command = new SqlCommand(sql, connection))
