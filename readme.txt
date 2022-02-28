@@ -13,3 +13,4 @@ AS
 BEGIN
 SET @Isvalid = (SELECT COUNT(1) FROM adminUser WHERE email = @email AND password =@password)
 end
+ 
