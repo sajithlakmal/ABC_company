@@ -59,6 +59,18 @@ namespace coudpermits_test.Controllers
             return View();
         }
 
+
+        public IActionResult logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("login", "home");
+
+            return View();
+        }
+
+
+
+
         [HttpPost]
         public IActionResult create(Inventory inventory)
         {

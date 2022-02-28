@@ -1,14 +1,14 @@
 ﻿
 @{
-    string CurrentReq = Convert.ToString(Context.Request.HttpContext.Request.RouteValues["Controller"]);
-  
+    string CurrentReq = Convert.ToString(Context.Request.HttpContext.Request.RouteValues["controller"]);
+
     Console.WriteLine(CurrentReq);
     switch (CurrentReq)  
     {  
-     
 
-       case "account":  
-            Layout = "User_Layout";  
+
+        case "Account":  
+            Layout = "User_Layout";
             break; 
 
         default:  
